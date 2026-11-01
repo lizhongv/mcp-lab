@@ -1,0 +1,42 @@
+[project]
+name = "mcp-lab"
+version = "0.1.0"
+description = "MCP 构建实验室：从零实现可测试、有安全边界的 MCP 服务器"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "lizhongv" }]
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.6,<2",
+    "httpx>=0.27",
+    "openai>=1.40",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["servers", "clients", "shared"]
+
+[tool.ruff]
+line-length = 119
+target-version = "py310"
+src = [".", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
