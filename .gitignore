@@ -10,3 +10,7 @@ __pycache__/
 data/kb.sqlite
 data/files/*
 !data/files/.gitkeep
+
+# 构建产物
+dist/
+build/

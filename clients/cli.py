@@ -18,6 +18,8 @@ from pathlib import Path
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
+from shared import __version__
+
 ROOT = Path(__file__).resolve().parents[1]
 
 # Windows 控制台默认 GBK，中文工具输出会乱码；统一切到 UTF-8。
@@ -55,6 +57,7 @@ async def run(server: str, tool: str | None, args: dict) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="MCP 最小客户端")
+    parser.add_argument("--version", action="version", version=f"mcp-lab {__version__}")
     parser.add_argument("--server", choices=sorted(SERVERS), default="kb")
     parser.add_argument("--tool", help="工具名；不填则列出所有工具")
     parser.add_argument("--args", default="{}", help="JSON 参数")

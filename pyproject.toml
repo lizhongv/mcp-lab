@@ -1,6 +1,6 @@
 [project]
 name = "mcp-lab"
-version = "0.1.0"
+version = "1.0.0"
 description = "MCP 构建实验室：从零实现可测试、有安全边界的 MCP 服务器"
 readme = "README.md"
 license = { text = "MIT" }

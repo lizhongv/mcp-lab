@@ -1,0 +1,38 @@
+# 推送 vX.Y.Z 标签时：运行测试，构建分发包，并按 CHANGELOG 生成 Release。
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run pytest -q
+      - run: uv build
+      - name: Release notes
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v v="$version" '
+            /^## \[/ { if (found) exit; found = index($0, "## [" v "]") == 1; next }
+            /^\[[^]]+\]: / { next }
+            found
+          ' CHANGELOG.md > release-notes.md
+          test -s release-notes.md || { echo "version $version not found in CHANGELOG.md"; exit 1; }
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: MCP Lab ${{ github.ref_name }}
+          body_path: release-notes.md
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
